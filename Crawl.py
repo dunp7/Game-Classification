@@ -8,7 +8,7 @@ driver = webdriver.Chrome()
 driver.get('https://oto.com.vn')
 
 ### Find product
-car = []
+car = ['as']
 
 # Find a box that need to find the product
 search_email = driver.find_element(By.ID,"txtKeyword")
