@@ -14,7 +14,8 @@ driver.get('https://oto.com.vn')
 brand_car = ['Porsche','Huyndai']
 
 # Features in the table
-data = { 'name': [],
+data = { 'brand': [],
+'name': [],
 'price' : [],
 'nam_sx' : [],
 'origin' : [],
@@ -67,6 +68,8 @@ for i in brand_car:
 # take all data for each features
     for href_link in href_links:
         driver.get(href_link)
+        # get brand
+        data['brand'].append(i)
         # get name
         try:
             data['name'].append(driver.find_element(By.CLASS_NAME,'title-detail').text)
@@ -117,13 +120,8 @@ for i in brand_car:
 # file csv
 data_file = 'Predict Used Car/raw_data_crawled.csv'
 
-with open(data_file,mode='w', newline= '') as f:
-    writer = csv.DictWriter(f, fieldnames= data.keys())
-    writer.writeheader()
-    # Write the data to the CSV file
-    writer.writerows(data)
+
 
 # Turn off the website
 driver.quit()
 
-print(data)
