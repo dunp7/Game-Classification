@@ -75,51 +75,55 @@ for i in brand_car:
             data['name'].append(driver.find_element(By.CLASS_NAME,'title-detail').text)
         except:
             print("Error in get name")
+            break
         # get price
         try:
              data['price'].append(driver.find_element(By.CLASS_NAME,'price').text)
         except:
             print("Error in get price")
-        # get nam_sx
-        try:
-            data['nam_sx'].append(driver.find_element(By.CLASS_NAME,'price').text)
+            break
+
+        # get all the information from the box which class is list-info
+        try: 
+            info_list = driver.find_element(By.CLASS_NAME,'list-info')
+            elements = info_list.find_elements(By.CSS_SELECTOR,"li")
+            for element in elements:
+                label_text = element.find_element(By.CSS_SELECTOR, 'label.label').text
+                if "Năm SX" in label_text:
+                    data['nam_sx'].append(element.text.replace('\n', ' '))
+                if "Kiểu dáng" in label_text:
+                    data['type_car'].append(element.text.replace('\n', ' '))
+                if "Tình trạng" in label_text:
+                    data['condition'].append(element.text.replace('\n', ' '))
+                if "Xuất xứ" in label_text:
+                    data['origin'].append(element.text.replace('\n', ' '))
+                if  "Km đã đi" in label_text:
+                    data['km_traveled'].append(element.text.replace('\n', ' '))
+                if "Hộp số" in label_text:
+                    data['gear'].append(element.text.replace('\n', ' '))
+                if "Nhiên liệu" in label_text:
+                    data['fuel'].append(element.text.replace('\n', ' '))
+            
         except:
-            print("Error in nam_sx")
-        # get origin
-        try:
-            data['origin'].append(driver.find_element(By.CLASS_NAME,'price').text)
-        except:
-            print("Error in Origin")
-        # get type_car 
-        try:
-            data['type_car'].append(driver.find_element(By.CLASS_NAME,'price').text)
-        except:
-            print("Error in type_car")
-        # get km_traveled 
-        try:
-            data['km_traveled'].append(driver.find_element(By.CLASS_NAME,'price').text)
-        except:
-            print("Error in km_traveled")
-        # get gear 
-        try:
-            data['gear'].append(driver.find_element(By.CLASS_NAME,'price').text)
-        except:
-            print("Error in get gear")
-        # get condition
-        try:
-            data['condition'].append(driver.find_element(By.CLASS_NAME,'price').text)
-        except:
-            print("Error in get condition")
-        # get fuel
-        try:
-            data['fuel'].append(driver.find_element(By.CLASS_NAME,'price').text)
-        except:
-            print("Error in get fuel")
+            print("Error in get info_list")
         time.sleep(1)
 
-# file csv
-data_file = 'Predict Used Car/raw_data_crawled.csv'
 
+## Read into file csv
+# file csv
+csv_file = 'Predict Used Car/Crawling/raw_data_crawled.csv'
+
+with open(csv_file, mode='w', newline='',encoding='utf-8') as file:
+    writer = csv.writer(file)
+
+    # Write the header (column names)
+    writer.writerow(data.keys())
+
+    # Write the data
+    rows = zip(*data.values())  # Transpose the data to align rows correctly
+    writer.writerows(rows)
+
+print(f'Data has been written to {csv_file}')
 
 
 # Turn off the website
