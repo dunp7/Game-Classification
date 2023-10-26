@@ -11,7 +11,8 @@ driver = webdriver.Chrome()
 driver.get('https://oto.com.vn')
 
 ### Find product
-brand_car = ['Porsche','Huyndai']
+brand_car = ['Porsche','Huyndai','Honda','Kia','Ford','Mazda','Vinfast','Lexus','Chervolet',\
+             'Nissan','Suzuki','Audi','Volvo','Volkswagen','Peugeot','BMW','Bentley']
 
 # Features in the table
 data = { 'brand': [],
@@ -35,25 +36,25 @@ for i in brand_car:
     search_box.send_keys(Keys.RETURN)
 
     # scroll all the car on the page
-    # while True:
-    #     try:
-    #         # Find the "Hiển thị thêm" button
-    #         nut_hien_thi_them = driver.find_element(By.CLASS_NAME, "btn-loadmore")
-    #         print(nut_hien_thi_them)
-    #         if nut_hien_thi_them.is_enabled():
-    #             # Scroll to the element to make it visible
-    #             ActionChains(driver).move_to_element(nut_hien_thi_them).perform()           
-    #             # Click the button
-    #             nut_hien_thi_them.click()
-    #         else:
-    #             # If the button is no longer enabled, break out of the loop
-    #             break
-    #     except NoSuchElementException:
-    #         # The button is not found, which means it no longer exists, so break out of the loop
-    #         break
-    #     except Exception as e:
-    #         # Handle other exceptions if necessary
-    #         print(f"An error occurred: {str(e)}")
+    while True:
+        try:
+            # Find the "Hiển thị thêm" button
+            nut_hien_thi_them = driver.find_element(By.CLASS_NAME, "btn-loadmore")
+            print(nut_hien_thi_them)
+            if nut_hien_thi_them.is_enabled():
+                # Scroll to the element to make it visible
+                ActionChains(driver).move_to_element(nut_hien_thi_them).perform()           
+                # Click the button
+                nut_hien_thi_them.click()
+            else:
+                # If the button is no longer enabled, break out of the loop
+                break
+        except NoSuchElementException:
+            # The button is not found, which means it no longer exists, so break out of the loop
+            break
+        except Exception as e:
+            # Handle other exceptions if necessary
+            print(f"An error occurred: {str(e)}")
 
 
     # find HTML class that all the information about car in it
@@ -110,6 +111,7 @@ for i in brand_car:
 
 
 ## Read into file csv
+
 # file csv
 csv_file = 'Predict Used Car/Crawling/raw_data_crawled.csv'
 
@@ -124,7 +126,6 @@ with open(csv_file, mode='w', newline='',encoding='utf-8') as file:
     writer.writerows(rows)
 
 print(f'Data has been written to {csv_file}')
-
 
 # Turn off the website
 driver.quit()
