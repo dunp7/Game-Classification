@@ -40,7 +40,6 @@ for i in brand_car:
         try:
             # Find the "Hiển thị thêm" button
             nut_hien_thi_them = driver.find_element(By.CLASS_NAME, "btn-loadmore")
-            print(nut_hien_thi_them)
             if nut_hien_thi_them.is_enabled():
                 # Scroll to the element to make it visible
                 ActionChains(driver).move_to_element(nut_hien_thi_them).perform()           
