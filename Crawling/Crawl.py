@@ -15,28 +15,36 @@ brand_car = ['Porsche','Huyndai','Honda','Kia','Ford','Mazda','Vinfast','Lexus',
              'Nissan','Suzuki','Audi','Volvo','Volkswagen','Peugeot','BMW','Bentley']
 
 # Features in the table
-data = { 'brand': [],
-'name': [],
-'price' : [],
-'nam_sx' : [],
-'origin' : [],
-'type_car' : [],
-'km_traveled' : [],
-'gear' : [],
-'condition' :[],
-'fuel' : []
-}
+features = ['brand','name','price' ,'nam_sx' ,'origin' ,'type_car' ,'km_traveled','gear' ,'condition','fuel']
+# file csv
+csv_file = 'Predict Used Car/Crawling/raw_data_crawled.csv'
+with open(csv_file, mode='a', newline='',encoding='utf-8') as file:
+    writer = csv.writer(file)
+
+    # Write the header (column names)
+    writer.writerow(features)
 
 
 # Find a box that need to find the product
 for i in brand_car:
+    data = { 'brand': [],
+    'name': [],
+    'price' : [],
+    'nam_sx' : [],
+    'origin' : [],
+    'type_car' : [],
+    'km_traveled' : [],
+    'gear' : [],
+    'condition' :[],
+    'fuel' : []
+    }
     # search for each brand car
     search_box = driver.find_element(By.ID,"txtKeyword")
     search_box.send_keys(i)
     search_box.send_keys(Keys.RETURN)
 
     # scroll all the car on the page
-    while True:
+    for count in range(20):
         try:
             # Find the "Hiển thị thêm" button
             nut_hien_thi_them = driver.find_element(By.CLASS_NAME, "btn-loadmore")
@@ -109,22 +117,19 @@ for i in brand_car:
         time.sleep(1)
 
 
-## Read into file csv
+    ## Read into file csv
 
-# file csv
-csv_file = 'Predict Used Car/Crawling/raw_data_crawled.csv'
+    with open(csv_file, mode='a', newline='',encoding='utf-8') as file:
+        writer = csv.writer(file)
 
-with open(csv_file, mode='w', newline='',encoding='utf-8') as file:
-    writer = csv.writer(file)
+        # Write the header (column names)
+        writer.writerow(data.keys())
 
-    # Write the header (column names)
-    writer.writerow(data.keys())
+        # Write the data
+        rows = zip(*data.values())  # Transpose the data to align rows correctly
+        writer.writerows(rows)
 
-    # Write the data
-    rows = zip(*data.values())  # Transpose the data to align rows correctly
-    writer.writerows(rows)
-
-print(f'Data has been written to {csv_file}')
+    print(f'{i} has been written to {csv_file}')
 
 # Turn off the website
 driver.quit()
