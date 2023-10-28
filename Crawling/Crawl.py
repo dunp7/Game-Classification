@@ -8,18 +8,26 @@ import csv
 # set driver
 
 class Crawling_tool:
-    def __init__(self, link):
-        # access the website
-        self.driver = webdriver.Chrome().get(link)
+    def __init__(self):
+        #initial set up
+        self.driver = webdriver.Chrome()
+
+    def access(self,link):
+        # Access the website
+        self.driver.get(link)
 
     def quit(self):
         # Turn off the website
         self.driver.quit()
 
     def input_the_brand_car(self,brand_name):
-        search_box = driver.find_element(By.ID,"txtKeyword")
-        search_box.send_keys(i)
+        search_box = self.driver.find_element(By.ID,"txtKeyword")
+        search_box.send_keys(brand_name)
         search_box.send_keys(Keys.RETURN)
+
+    def scroll_to_the_info_box(self):
+        key = self.driver.find_element(By.CLASS_NAME,'box-info-detail')
+        ActionChains(self.driver).move_to_element(key).perform()  
 
     def loading_all_the_car(self):
         # scroll all the car on the page
@@ -41,6 +49,8 @@ class Crawling_tool:
             except Exception as e:
                 # Handle other exceptions if necessary
                 print(f"An error occurred: {str(e)}")
+            time.sleep(1)
+            self.driver.set_page_load_timeout(5)
 
     def find_all_link_cars(self):
         # find HTML class that all the information about car in it
@@ -51,19 +61,16 @@ class Crawling_tool:
         href_links = [element.get_attribute("href") for element in elements]
         return href_links
 
-    def add_information_into_csvfile(self,csv_file):
+    def add_information_into_csvfile(self,csv_file,data):
         ## Read into file csv
         with open(csv_file, mode='a', newline='',encoding='utf-8') as file:
             writer = csv.writer(file)
-            # Write the header (column names)
-            writer.writerow(data.keys())
             # Write the data
             rows = zip(*data.values())  # Transpose the data to align rows correctly
             writer.writerows(rows)
 
-        print(f'{i} has been written to {csv_file}')
-
-    def crawling_data(self,brand_name,csv_file):
+        print(f'brand has been written to {csv_file}')
+    def crawling_data(self,brand_name,csv_file,link):
         data = { 'brand': [],
         'name': [],
         'price' : [],
@@ -75,30 +82,39 @@ class Crawling_tool:
         'condition' :[],
         'fuel' : []
         }
+        self.access(link)
         self.input_the_brand_car(brand_name)
         self.loading_all_the_car()
         href_links = self.find_all_link_cars()
         #take all data for each features
         for href_link in href_links:
-            driver.get(href_link)
+            try:
+                self.driver.get(href_link)
+                self.driver.implicitly_wait(10)  # Wait for elements to be found within a 10-second window
+                self.scroll_to_the_info_box()
+                # Continue processing for this href_link
+            except:
+                print(f" for {href_link} :Error")
+                # Handle the timeout for this specific link 
+                continue  # Move to the next href_link after handling the exception
             # get brand
-            data['brand'].append(i)
+            data['brand'].append(brand_name)
             # get name
             try:
-                data['name'].append(driver.find_element(By.CLASS_NAME,'title-detail').text)
+                data['name'].append(self.driver.find_element(By.CLASS_NAME,'title-detail').text)
             except:
                 print("Error in get name")
                 break
             # get price
             try:
-                data['price'].append(driver.find_element(By.CLASS_NAME,'price').text)
+                data['price'].append(self.driver.find_element(By.CLASS_NAME,'price').text)
             except:
                 print("Error in get price")
                 break
 
             # get all the information from the box which class is list-info
             try: 
-                info_list = driver.find_element(By.CLASS_NAME,'list-info')
+                info_list = self.driver.find_element(By.CLASS_NAME,'list-info')
                 elements = info_list.find_elements(By.CSS_SELECTOR,"li")
                 for element in elements:
                     label_text = element.find_element(By.CSS_SELECTOR, 'label.label').text
@@ -119,7 +135,7 @@ class Crawling_tool:
                 
             except:
                 print("Error in get info_list")
-            time.sleep(1)
-
-        self.add_information_into_csvfile(csv_file)
+            time.sleep(3)
+        self.quit()
+        self.add_information_into_csvfile(csv_file,data)
 
