@@ -5,6 +5,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 import time
 import csv
+import re
 
 link = 'https://oto.com.vn'
 
@@ -67,10 +68,11 @@ class Crawling_tool(Crawl_tool):
 
     def create_features(self):
         return { 'brand': [],'name': [],'price' : [],'nam_sx' : [],'origin' : [],\
-                'type_car' : [],'km_traveled' : [],'gear' : [], 'condition' :[],'fuel' : []}
+                'type_car' : [],'km_traveled' : [],'gear' : [], 'condition' :[],'fuel' : [],'engine':[]}
 
     def input_initial_features(self,data):
-        pass
+        for i in data.keys():
+            data[i].append(None)
 
     def crawling_data(self,brand_name,csv_file,link):
         data = self.create_features()
@@ -80,6 +82,7 @@ class Crawling_tool(Crawl_tool):
         href_links = self.find_all_link_cars()
         #take all data for each features
         for href_link in href_links:
+            self.input_initial_features(data)
             try:
                 self.driver.get(href_link)
                 self.driver.implicitly_wait(10)  # Wait for elements to be found within a 10-second window
@@ -89,12 +92,11 @@ class Crawling_tool(Crawl_tool):
                 print(f" for {href_link} :Error")
                 # Handle the timeout for this specific link 
                 continue  # Move to the next href_link after handling the exception
-            # get brand
-            data['brand'].append(brand_name)
-
-            # get name
+            # get name and brand
             try:
-                data['name'].append(self.driver.find_element(By.CLASS_NAME,'title-detail').text)
+                name = self.driver.find_element(By.CLASS_NAME,'title-detail').text
+                data['name'].append(name)
+                data['brand'].append(re.findall('^(\w+)(?=\s)',name)[0])
             except:
                 print("Error in get name")
                 break
@@ -113,23 +115,30 @@ class Crawling_tool(Crawl_tool):
                 for element in elements:
                     label_text = element.find_element(By.CSS_SELECTOR, 'label.label').text
                     if "Năm SX" in label_text:
-                        data['nam_sx'].append(element.text.replace('\n', ' '))
+                        data['nam_sx'].append(element.text.replace('\n', ' ').replace("Năm SX",''))
+
                     if "Kiểu dáng" in label_text:
-                        data['type_car'].append(element.text.replace('\n', ' '))
+                        data['type_car'].append(element.text.replace('\n', ' ').replace("Kiểu dáng",''))
+
                     if "Tình trạng" in label_text:
-                        data['condition'].append(element.text.replace('\n', ' '))
+                        data['condition'].append(element.text.replace('\n', ' ').replace("Tình trạng",''))
+
                     if "Xuất xứ" in label_text:
-                        data['origin'].append(element.text.replace('\n', ' '))
+                        data['origin'].append(element.text.replace('\n', ' ').replace("Xuất xứ",''))
+
                     if  "Km đã đi" in label_text:
-                        data['km_traveled'].append(element.text.replace('\n', ' '))
+                        data['km_traveled'].append(element.text.replace('\n', ' ').replace("Km đã đi",''))
+
                     if "Hộp số" in label_text:
-                        data['gear'].append(element.text.replace('\n', ' '))
+                        data['gear'].append(element.text.replace('\n', ' ').replace("Hộp số",''))
+
                     if "Nhiên liệu" in label_text:
-                        data['fuel'].append(element.text.replace('\n', ' '))
+                        data['fuel'].append(element.text.replace('\n', ' ').replace("Nhiên liệu",''))
+
                 
             except:
                 print("Error in get info_list")
-            time.sleep(3)
+            time.sleep(2)
         self.quit()
         self.add_information_into_csvfile(csv_file,data,brand_name)
 
