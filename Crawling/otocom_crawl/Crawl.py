@@ -69,6 +69,8 @@ class Crawling_tool(Crawl_tool):
         return { 'brand': [],'name': [],'price' : [],'nam_sx' : [],'origin' : [],\
                 'type_car' : [],'km_traveled' : [],'gear' : [], 'condition' :[],'fuel' : []}
 
+    def input_initial_features(self,data):
+        pass
 
     def crawling_data(self,brand_name,csv_file,link):
         data = self.create_features()

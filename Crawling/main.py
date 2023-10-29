@@ -4,9 +4,9 @@ import time
 
 # brand car
 
-brand_car = ['Porsche','Huyndai','Honda','Kia','Ford','Mazda','Vinfast','Lexus','Chervolet','Nissan',\
-             'Suzuki','Audi','Volvo','Volkswagen','Peugeot','BMW','Bentley']
-
+# brand_car = ['Porsche','Huyndai','Honda','Kia','Ford','Mazda','Vinfast','Lexus','Chervolet','Nissan',\
+#              'Suzuki','Audi','Volvo','Volkswagen','Peugeot','BMW','Bentley']
+brand_car = ['Huyndai','Toyota','BMW']
 # website
 link = 'https://oto.com.vn'
 
