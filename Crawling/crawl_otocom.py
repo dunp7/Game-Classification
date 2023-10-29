@@ -14,7 +14,7 @@ features = ['brand','name','price' ,'nam_sx' ,'origin' ,'type_car' ,\
             'km_traveled','gear' ,'condition','fuel','engine']
 
 # file csv
-csv_file = 'Predict Used Car/Crawling/raw_data/raw_data_crawled.csv'
+csv_file = 'Predict Used Car/Data/Raw_data/raw_data_crawled_otocom.csv'
 with open(csv_file, mode='w', newline='',encoding='utf-8') as file:
     writer = csv.writer(file)
     # Write the header (column names)

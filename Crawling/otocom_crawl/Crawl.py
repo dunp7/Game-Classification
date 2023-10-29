@@ -72,7 +72,7 @@ class Crawling_tool(Crawl_tool):
 
     def input_initial_features(self,data):
         for i in data.keys():
-            data[i].append(None)
+            data[i].append('None')
 
     def crawling_data(self,brand_name,csv_file,link):
         data = self.create_features()
@@ -95,6 +95,8 @@ class Crawling_tool(Crawl_tool):
             # get name and brand
             try:
                 name = self.driver.find_element(By.CLASS_NAME,'title-detail').text
+                data['name'].pop()
+                data['brand'].pop()
                 data['name'].append(name)
                 data['brand'].append(re.findall('^(\w+)(?=\s)',name)[0])
             except:
@@ -103,7 +105,9 @@ class Crawling_tool(Crawl_tool):
 
             # get price
             try:
-                data['price'].append(self.driver.find_element(By.CLASS_NAME,'price').text)
+                data['price'].pop()
+                price = self.driver.find_element(By.CLASS_NAME,'price').text
+                data['price'].append(price)
             except:
                 print("Error in get price")
                 break
@@ -115,30 +119,37 @@ class Crawling_tool(Crawl_tool):
                 for element in elements:
                     label_text = element.find_element(By.CSS_SELECTOR, 'label.label').text
                     if "Năm SX" in label_text:
+                        data['nam_sx'].pop()
                         data['nam_sx'].append(element.text.replace('\n', ' ').replace("Năm SX",''))
 
                     if "Kiểu dáng" in label_text:
+                        data['type_car'].pop()
                         data['type_car'].append(element.text.replace('\n', ' ').replace("Kiểu dáng",''))
 
                     if "Tình trạng" in label_text:
+                        data['condition'].pop()
                         data['condition'].append(element.text.replace('\n', ' ').replace("Tình trạng",''))
 
                     if "Xuất xứ" in label_text:
+                        data['origin'].pop()
                         data['origin'].append(element.text.replace('\n', ' ').replace("Xuất xứ",''))
 
                     if  "Km đã đi" in label_text:
-                        data['km_traveled'].append(element.text.replace('\n', ' ').replace("Km đã đi",''))
+                        data['km_traveled'].pop()
+                        data['km_traveled'].append(element.text.replace('\n', ' ').replace("Km đã đi",'').replace('km',''))
 
                     if "Hộp số" in label_text:
+                        data['gear'].pop()
                         data['gear'].append(element.text.replace('\n', ' ').replace("Hộp số",''))
 
                     if "Nhiên liệu" in label_text:
+                        data['fuel'].pop()
                         data['fuel'].append(element.text.replace('\n', ' ').replace("Nhiên liệu",''))
 
                 
             except:
                 print("Error in get info_list")
-            time.sleep(2)
+            time.sleep(1)
         self.quit()
         self.add_information_into_csvfile(csv_file,data,brand_name)
 
