@@ -1,4 +1,4 @@
-from Crawl_tool_base import Crawl_tool
+from Crawl_tool import Crawl_tool
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains

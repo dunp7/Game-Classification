@@ -1,6 +1,6 @@
 from selenium import webdriver
 
-class Crawl_tool():
+class Crawl_tool:
     def __init__(self):
         #initial set up
         self.driver = webdriver.Chrome()
