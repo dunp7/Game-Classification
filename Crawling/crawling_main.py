@@ -34,8 +34,8 @@ link_cars = list()
 for brand_name in brand_car:
     link_tool = Crawling_link_tool()
     brand_car_link = link_tool.find_all_link_cars(brand_name,link_web)
-    link_cars.append(brand_car_link)
-    time.sleep(10)
+    link_cars.extend(brand_car_link)
+    time.sleep(5)
 
 with open(file_path, 'ab') as file:
     pickle.dump(link_cars,file)
