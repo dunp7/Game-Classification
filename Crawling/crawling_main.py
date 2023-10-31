@@ -7,7 +7,7 @@ import pickle
 brand_car = ['Porsche','Huyndai','Honda','Kia','Ford','Mazda','Vinfast','Lexus','Chervolet','Nissan',\
              'Suzuki','Audi','Volvo','Volkswagen','Peugeot','BMW','Bentley']
 # website
-link = 'https://oto.com.vn'
+link_web = 'https://oto.com.vn'
 
 # Features in the table
 features = ['brand','name','price' ,'nam_sx' ,'origin' ,'type_car' ,\
@@ -23,16 +23,23 @@ with open(csv_file, mode='w', newline='',encoding='utf-8') as file:
     writer.writerow(features)
     print('Add header successfully')
     
-with open(file_path, 'ab') as file:
+with open(file_path, 'wb') as file:
     pass
 
 # Crawling data
 
 # website oto.com 
+# crawl link
+link_cars = list()
 for brand_name in brand_car:
     link_tool = Crawling_link_tool()
-    link_tool.add_links_into_file(brand_name,file_path,link)
+    brand_car_link = link_tool.find_all_link_cars(brand_name,link_web)
+    link_cars.append(brand_car_link)
     time.sleep(10)
+
+with open(file_path, 'ab') as file:
+    pickle.dump(link_cars,file)
+    print('link has been saved')
 
 # data_tool = Crawling_data_tool(file_path)
 # data_tool.crawling_data(csv_file)

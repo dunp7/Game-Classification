@@ -194,7 +194,8 @@ class Crawling_link_tool(Crawl_tool):
             time.sleep(1)
             self.driver.set_page_load_timeout(5)
 
-    def find_all_link_cars(self,brand):
+    def find_all_link_cars(self,brand,link_web):
+        self.access(link_web)
         self.input_the_brand_car(brand)
         self.loading_all_the_car()
         # find HTML class that all the information about car in it
@@ -205,13 +206,6 @@ class Crawling_link_tool(Crawl_tool):
         href_links = [element.get_attribute("href") for element in elements]
         return href_links
     
-    def add_links_into_file(self,brand,link_file,link):
-        self.access(link)
-        link = self.find_all_link_cars(brand)
-        ## Read into file csv
-        with open(link_file, 'ab') as file:
-            pickle.dump(link, file)
-        print('Link has been added to file')
 
 
 
